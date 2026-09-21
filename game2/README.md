@@ -3,12 +3,12 @@
 You have reached the repository-history challenge.
 
 Your task is to travel through the repository's Git history and identify
-the exact commit message used by the commit that introduced this README.
+the exact commit message used by the commit that last modified this README.
 
 ## How to investigate
 
 1. Open the repository's commits/history view.
-2. Find the commit where this Game 2 README was introduced.
+2. Find the latest commit that modified this Game 2 README.
 3. Open that commit.
 4. Read the exact commit message.
 
