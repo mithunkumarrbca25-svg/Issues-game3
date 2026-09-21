@@ -1,0 +1,2 @@
+Internal event preparation note.
+Commit sequence item: Prepare challenge resources
