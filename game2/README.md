@@ -1,0 +1,25 @@
+# Game 2 — Commit Time Machine
+
+You have reached the repository-history challenge.
+
+Your task is to travel through the repository's Git history and identify
+the exact commit message used by the commit that introduced this README.
+
+## How to investigate
+
+1. Open the repository's commits/history view.
+2. Find the commit where this Game 2 README was introduced.
+3. Open that commit.
+4. Read the exact commit message.
+
+Then return to the Game 2 issue and submit:
+
+`/answer <exact commit message>`
+
+The automated checker ignores capitalization and surrounding whitespace.
+
+### Important
+
+Do not guess.
+
+Use the actual Git history to find the answer.
