@@ -22,6 +22,7 @@ jobs:
             const issueNumber = context.issue.number;
             const body = context.payload.comment.body.trim();
             const submittedBy = context.payload.comment.user.login;
+            const commentId = context.payload.comment.id;
 
             const gameIssues = { 1: 1, 2: 2, 3: 3 };
             const issueToGame = { 1: 1, 2: 2, 3: 3 };
@@ -29,6 +30,19 @@ jobs:
             const game = issueToGame[issueNumber];
             if (!game) {
               return;
+            }
+
+            // Delete only the participant's submission, before creating any bot response.
+            async function deleteSubmission() {
+              try {
+                await github.rest.issues.deleteComment({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  comment_id: commentId
+                });
+              } catch (error) {
+                console.log('Could not delete participant comment:', error.message);
+              }
             }
 
             const answer = body.slice('/answer '.length).split(/\r?\n/)[0].trim();
@@ -54,6 +68,7 @@ jobs:
             }
 
             if (game === 2 && !(await hasPassed(1))) {
+              await deleteSubmission();
               await github.rest.issues.createComment({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
@@ -64,6 +79,7 @@ jobs:
             }
 
             if (game === 3 && !(await hasPassed(2))) {
+              await deleteSubmission();
               await github.rest.issues.createComment({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
@@ -78,6 +94,7 @@ jobs:
               const match = commitLine && commitLine.match(/https:\/\/github\.com\/([^/]+)\/([^/]+)\/commit\/([0-9a-fA-F]{7,40})/);
 
               if (!match) {
+                await deleteSubmission();
                 await github.rest.issues.createComment({
                   owner: context.repo.owner,
                   repo: context.repo.repo,
@@ -100,6 +117,7 @@ jobs:
 
                 const hasFinalAnswer = (commit.data.files || []).some(file => file.filename === 'final-answer.txt');
                 if (!hasFinalAnswer) {
+                  await deleteSubmission();
                   await github.rest.issues.createComment({
                     owner: context.repo.owner,
                     repo: context.repo.repo,
@@ -109,6 +127,7 @@ jobs:
                   return;
                 }
               } catch (error) {
+                await deleteSubmission();
                 await github.rest.issues.createComment({
                   owner: context.repo.owner,
                   repo: context.repo.repo,
@@ -120,6 +139,7 @@ jobs:
             }
 
             if (normalize(answer) !== normalize(answers[game])) {
+              await deleteSubmission();
               await github.rest.issues.createComment({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
@@ -132,6 +152,7 @@ jobs:
             const marker = `<!-- ISSUES-GAME3-PASS game=${game} user=${submittedBy} -->`;
 
             if (game === 3) {
+              await deleteSubmission();
               await github.rest.issues.createComment({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
